@@ -1,0 +1,375 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="theme-color" content="#6d4aff" />
+  <title>مغامرة خصائص الجمع | المعلمة شيمة القحطاني</title>
+  <style>
+    *{box-sizing:border-box}
+    :root{
+      --ink:#27304a;--muted:#667085;--purple:#6d4aff;--purple2:#8d6cff;
+      --yellow:#ffd65a;--green:#34c98b;--red:#ff6b78;--blue:#56b6ff;
+      --paper:#fffdf7;--card:#ffffff;--line:#e8e7f2;--shadow:0 18px 45px rgba(59,45,108,.14)
+    }
+    body{
+      margin:0; min-height:100vh; font-family:Tahoma,Arial,sans-serif; color:var(--ink);
+      background:
+        radial-gradient(circle at 10% 10%, #fff0b5 0 80px, transparent 81px),
+        radial-gradient(circle at 90% 18%, #d9ecff 0 110px, transparent 111px),
+        linear-gradient(160deg,#f7f1ff,#fffdf7 58%,#effaf6);
+    }
+    button,input{font:inherit}
+    button{cursor:pointer}
+    .wrap{width:min(1050px,94%);margin:auto;padding:22px 0 40px}
+    .top{
+      display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;
+      background:rgba(255,255,255,.88);border:1px solid var(--line);padding:12px 16px;border-radius:20px;
+      box-shadow:0 8px 25px rgba(59,45,108,.08);backdrop-filter:blur(8px)
+    }
+    .brand{font-weight:900}.teacher{font-size:14px;color:var(--muted)}
+    .stats{display:flex;gap:8px;flex-wrap:wrap}
+    .pill{background:#fff;border:1px solid var(--line);border-radius:999px;padding:8px 12px;font-size:14px;font-weight:800}
+    .screen{display:none}.screen.active{display:block}
+    .hero{
+      margin-top:18px;display:grid;grid-template-columns:1.08fr .92fr;gap:18px;align-items:center;
+      background:rgba(255,255,255,.9);border:1px solid var(--line);border-radius:30px;padding:28px;box-shadow:var(--shadow)
+    }
+    .hero h1{font-size:clamp(28px,5vw,52px);margin:6px 0 10px;line-height:1.1}
+    .hero h1 span{color:var(--purple)}
+    .hero p{line-height:1.8;color:var(--muted);font-size:17px}
+    .start-card{background:#f7f3ff;border:1px dashed #cdbffd;border-radius:22px;padding:18px;margin-top:18px}
+    .start-card label{display:block;font-weight:800;margin-bottom:8px}
+    .name-input{width:100%;border:2px solid #e1dafd;border-radius:14px;padding:13px 14px;background:#fff;outline:none}
+    .name-input:focus{border-color:var(--purple)}
+    .primary{border:0;border-radius:15px;padding:13px 18px;background:linear-gradient(135deg,var(--purple),var(--purple2));color:#fff;font-weight:900;box-shadow:0 8px 18px rgba(109,74,255,.25)}
+    .primary:active{transform:translateY(1px)}
+    .start-btn{width:100%;margin-top:12px;font-size:18px}
+    .visual{
+      min-height:360px;border-radius:26px;display:flex;align-items:center;justify-content:center;overflow:hidden;
+      background:linear-gradient(145deg,#e9e0ff,#fff5c9);position:relative
+    }
+    .visual svg{width:95%;height:auto}
+    .game-grid{display:grid;grid-template-columns:220px 1fr;gap:16px;margin-top:18px}
+    .map{
+      background:rgba(255,255,255,.92);border:1px solid var(--line);border-radius:24px;padding:18px;box-shadow:var(--shadow);
+      height:max-content
+    }
+    .map h3{margin:0 0 12px}.path{display:grid;gap:10px}
+    .node{display:flex;align-items:center;gap:10px;padding:10px;border-radius:14px;color:var(--muted)}
+    .node .dot{width:32px;height:32px;border-radius:50%;display:grid;place-items:center;background:#f2efff;border:2px solid #ded5ff}
+    .node.done{color:var(--ink);font-weight:800}.node.done .dot{background:#e7fff4;border-color:#8ee2bd}
+    .node.current{background:#f3efff;color:var(--purple);font-weight:900}.node.current .dot{background:var(--purple);border-color:var(--purple);color:#fff}
+    .qcard{
+      background:rgba(255,255,255,.94);border:1px solid var(--line);border-radius:28px;padding:22px;box-shadow:var(--shadow)
+    }
+    .qtop{display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap}
+    .tag{border-radius:999px;background:#f1edff;color:var(--purple);font-weight:900;padding:7px 11px;font-size:13px}
+    .progress{height:11px;border-radius:999px;background:#efedf5;overflow:hidden;margin:15px 0 20px}
+    .progress>div{height:100%;background:linear-gradient(90deg,var(--purple),#a88fff);width:0;transition:.35s}
+    .question-visual{
+      border-radius:22px;min-height:190px;display:grid;place-items:center;text-align:center;padding:18px;
+      background:linear-gradient(145deg,#f8f5ff,#fff9df);border:1px solid #eee8ff
+    }
+    .big-emoji{font-size:68px;filter:drop-shadow(0 10px 12px rgba(65,52,104,.12))}
+    .math-art{font-size:32px;font-weight:900;margin-top:8px;letter-spacing:1px}
+    .question{font-size:clamp(20px,3vw,29px);line-height:1.65;text-align:center;margin:18px 0}
+    .answers{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+    .answer{
+      min-height:58px;border-radius:15px;border:2px solid #ece9f4;background:#fff;padding:12px;font-weight:900;color:var(--ink)
+    }
+    .answer:hover{border-color:#cfc3ff;background:#faf8ff}
+    .answer.correct{border-color:#55c999;background:#eafff4}
+    .answer.wrong{border-color:#ff9aa4;background:#fff0f2}
+    .answer:disabled{cursor:default}
+    .feedback{min-height:50px;margin-top:13px;border-radius:14px;padding:12px;display:none;line-height:1.6;font-weight:800}
+    .feedback.show{display:block}.feedback.ok{background:#eafff4;color:#167a54}.feedback.no{background:#fff0f2;color:#a83440}
+    .next-row{display:flex;justify-content:flex-end;margin-top:13px}
+    .reward{
+      margin-top:18px;background:linear-gradient(145deg,#fff8d9,#fff);border:1px solid #f2db7a;border-radius:30px;padding:28px;text-align:center;box-shadow:var(--shadow)
+    }
+    .chest{font-size:90px;animation:bounce 1.4s ease-in-out infinite}
+    @keyframes bounce{50%{transform:translateY(-8px) rotate(-2deg)}}
+    .reward h2{font-size:32px;margin:8px 0}.reward p{color:var(--muted);line-height:1.8}
+    .reward-badge{display:inline-grid;place-items:center;width:110px;height:110px;border-radius:50%;background:#fff;border:6px solid var(--yellow);font-size:50px;margin:10px}
+    .sparkles{font-size:22px;letter-spacing:8px}
+    .finish{
+      margin-top:18px;background:rgba(255,255,255,.95);border:1px solid var(--line);border-radius:30px;padding:30px;text-align:center;box-shadow:var(--shadow)
+    }
+    .trophy{font-size:88px}.finish h2{font-size:38px;margin:5px}
+    .certificate{margin:22px auto 0;max-width:680px;border:9px double #d9bd57;border-radius:18px;padding:24px;background:#fffdf4}
+    .student-name{font-size:32px;color:var(--purple);font-weight:900;margin:10px}
+    .small{font-size:13px;color:var(--muted)}
+    .confetti{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:50}
+    .confetti i{position:absolute;top:-20px;width:10px;height:16px;border-radius:2px;animation:fall 1.9s linear forwards}
+    @keyframes fall{to{transform:translateY(110vh) rotate(720deg);opacity:.9}}
+    @media(max-width:780px){
+      .hero{grid-template-columns:1fr;padding:18px}.visual{min-height:260px}
+      .game-grid{grid-template-columns:1fr}.map{display:block;overflow-x:auto;padding:12px}.path{display:flex;min-width:620px;gap:8px}.node{min-width:112px;justify-content:center;flex-direction:column;text-align:center}.answers{grid-template-columns:1fr}
+      .qcard{padding:16px}.question-visual{min-height:150px}.big-emoji{font-size:56px}
+    }
+  
+    /* Adventure polish */
+    .screen.active{animation:screenIn .48s cubic-bezier(.2,.8,.2,1)}
+    @keyframes screenIn{from{opacity:0;transform:translateY(16px) scale(.985)}to{opacity:1;transform:none}}
+    .node.current{animation:pulseNode 1.2s ease-in-out infinite;box-shadow:0 0 0 0 rgba(109,74,255,.28)}
+    @keyframes pulseNode{50%{transform:scale(1.04);box-shadow:0 0 0 9px rgba(109,74,255,0)}}
+    .question-visual{position:relative;overflow:hidden}
+    .question-visual:after{content:"✨";position:absolute;left:9%;top:12%;font-size:25px;animation:floaty 2.3s ease-in-out infinite}
+    .question-visual:before{content:"⭐";position:absolute;right:8%;bottom:12%;font-size:24px;animation:floaty 1.9s ease-in-out infinite reverse}
+    @keyframes floaty{50%{transform:translateY(-10px) rotate(10deg)}}
+    .answer{transition:.2s transform,.2s box-shadow,.2s border-color}
+    .answer:active{transform:scale(.97)}
+    .answer.correct{animation:correctPop .5s ease}
+    @keyframes correctPop{50%{transform:scale(1.035)}}
+    .auto-note{font-size:12px;color:var(--muted);text-align:center;margin-top:8px}
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div><div class="brand">➕ مغامرة خصائص الجمع</div><div class="teacher">إعداد المعلمة: شيمة القحطاني</div></div>
+    <div class="stats">
+      <div class="pill">⭐ <span id="stars">0</span></div>
+      <div class="pill">🪙 <span id="coins">0</span></div>
+      <div class="pill">🏅 <span id="score">0</span></div>
+    </div>
+  </header>
+
+  <main id="startScreen" class="screen active">
+    <section class="hero">
+      <div>
+        <div class="tag">رياضيات • الصف الثالث الابتدائي • المنهج السعودي</div>
+        <h1>مغامرة <span>خصائص الجمع</span></h1>
+        <p>انطلق في خمس محطات ممتعة، أجب عن الأسئلة، واجمع النجوم والعملات، وافتح صناديق المكافآت حتى تصل إلى كأس بطل خصائص الجمع!</p>
+        <div class="start-card">
+          <label for="studentName">اكتب اسم الطالب / الطالبة</label>
+          <input id="studentName" class="name-input" maxlength="30" placeholder="مثال: محمد" />
+          <button id="startBtn" class="primary start-btn">🚀 ابدأ المغامرة</button>
+        </div>
+      </div>
+      <div class="visual" aria-label="رسم تعليمي لخصائص الجمع">
+        <svg viewBox="0 0 520 420" role="img">
+          <circle cx="410" cy="76" r="43" fill="#ffd65a"/>
+          <path d="M55 340 C130 275 150 300 215 240 S335 175 465 110" fill="none" stroke="#fff" stroke-width="24" stroke-linecap="round"/>
+          <path d="M55 340 C130 275 150 300 215 240 S335 175 465 110" fill="none" stroke="#8d6cff" stroke-width="6" stroke-linecap="round" stroke-dasharray="10 14"/>
+          <g font-family="Arial" font-weight="800" text-anchor="middle">
+            <circle cx="75" cy="323" r="39" fill="#fff"/><text x="75" y="335" font-size="32" fill="#6d4aff">0</text>
+            <circle cx="215" cy="241" r="39" fill="#fff"/><text x="215" y="253" font-size="29" fill="#34a87a">↔</text>
+            <circle cx="344" cy="180" r="39" fill="#fff"/><text x="344" y="191" font-size="25" fill="#ff7e48">( )</text>
+            <text x="266" y="80" font-size="54" fill="#27304a">3 + 5 = 8</text>
+            <text x="266" y="130" font-size="28" fill="#667085">تعلم • العب • اربح</text>
+          </g>
+          <path d="M90 90 l14 28 31 5-23 22 5 31-27-15-28 15 6-31-23-22 31-5z" fill="#ffd65a"/>
+        </svg>
+      </div>
+    </section>
+  </main>
+
+  <main id="gameScreen" class="screen">
+    <div class="game-grid">
+      <aside class="map">
+        <h3>🗺️ خريطة المغامرة</h3>
+        <div class="path" id="path"></div>
+      </aside>
+      <section class="qcard">
+        <div class="qtop">
+          <span id="category" class="tag">المحطة الأولى</span>
+          <strong id="counter">1 / 17</strong>
+        </div>
+        <div class="progress"><div id="progressBar"></div></div>
+        <div class="question-visual">
+          <div>
+            <div id="qEmoji" class="big-emoji">🔄</div>
+            <div id="qArt" class="math-art">٣ + ٥ = ٥ + ٣</div>
+          </div>
+        </div>
+        <div id="question" class="question"></div>
+        <div id="answers" class="answers"></div>
+        <div id="feedback" class="feedback" aria-live="polite"></div>
+        <div class="next-row"><button id="nextBtn" class="primary" style="display:none">التالي ←</button></div><div id="autoNote" class="auto-note"></div>
+      </section>
+    </div>
+  </main>
+
+  <main id="rewardScreen" class="screen">
+    <section class="reward">
+      <div class="sparkles">✨ ⭐ ✨ ⭐ ✨</div>
+      <div class="chest">🎁</div>
+      <h2>مكافأة جديدة!</h2>
+      <div id="rewardBadge" class="reward-badge">🏅</div>
+      <h3 id="rewardTitle">وسام البطل</h3>
+      <p id="rewardText"></p>
+      <button id="continueBtn" class="primary">افتح المحطة التالية 🚪</button>
+    </section>
+  </main>
+
+  <main id="finishScreen" class="screen">
+    <section class="finish">
+      <div class="trophy">🏆</div>
+      <h2>أحسنت يا بطل!</h2>
+      <p id="finalMessage"></p>
+      <div class="certificate">
+        <div class="small">شهادة إنجاز</div>
+        <h3>بطل خصائص الجمع</h3>
+        <p>تُمنح هذه الشهادة إلى</p>
+        <div id="certName" class="student-name"></div>
+        <p>لإتمام مغامرة خصائص الجمع للصف الثالث الابتدائي</p>
+        <p><b>النتيجة: <span id="finalScore"></span></b></p>
+        <div class="small">إعداد المعلمة: شيمة القحطاني</div>
+      </div>
+      <button id="restartBtn" class="primary" style="margin-top:18px">🔁 العب من جديد</button>
+    </section>
+  </main>
+</div>
+<div id="confetti" class="confetti"></div>
+
+<script>
+const questions = [
+  {cat:"المحطة 1 • اكتشف الفكرة",e:"🔄",art:"٣ + ٥ = ؟",q:"إذا كان ٣ + ٥ = ٨، فما ناتج ٥ + ٣؟",a:["٦","٧","٨","٩"],c:2,why:"لأن تبديل ترتيب العددين لا يغيّر ناتج الجمع."},
+  {cat:"المحطة 1 • اكتشف الفكرة",e:"0️⃣",art:"٧ + □ = ٧",q:"ما العدد المناسب؟ ٧ + ☐ = ٧",a:["٠","١","٧","١٤"],c:0,why:"الصفر هو العنصر المحايد في الجمع."},
+  {cat:"المحطة 1 • اكتشف الفكرة",e:"🧩",art:"(٢ + ٣) + ٤",q:"أي عبارة تساوي (٢ + ٣) + ٤؟",a:["٢ + (٣ + ٤)","٢ + (٣ + ٣)","٤ + (٢ + ٢)","٣ + (٤ + ٤)"],c:0,why:"غيّرنا طريقة التجميع فقط وبقي ترتيب الأعداد كما هو."},
+  {cat:"المحطة 1 • اكتشف الفكرة",e:"🔄",art:"٦ + ٢ ↔",q:"اختر العبارة التي تمثل خاصية الإبدال لـ ٦ + ٢.",a:["٦ + ٠","٢ + ٦","٦ + ٦","٢ + ٠"],c:1,why:"في الإبدال نبدّل ترتيب العددين."},
+  {cat:"المحطة 2 • احسب بذكاء",e:"🏆",art:"(٥ + ٠) + ٣",q:"باستخدام خصائص الجمع: (٥ + ٠) + ٣ يساوي كم؟",a:["٥","٣","٨","٠"],c:2,why:"٥ + ٠ = ٥، ثم ٥ + ٣ = ٨."},
+
+  {cat:"المحطة 2 • سمِّ الخاصية",e:"🔄",art:"٤ + ٧ = ٧ + ٤",q:"ما الخاصية المستخدمة في ٤ + ٧ = ٧ + ٤؟",a:["خاصية الإبدال","خاصية التجميع","خاصية العنصر المحايد"],c:0,why:"هذه خاصية الإبدال لأن ترتيب العددين تغيّر."},
+  {cat:"المحطة 2 • سمِّ الخاصية",e:"0️⃣",art:"٩ + ٠ = ٩",q:"ما الخاصية المستخدمة في ٩ + ٠ = ٩؟",a:["خاصية التجميع","خاصية العنصر المحايد","خاصية الإبدال"],c:1,why:"إضافة الصفر لا تغيّر العدد."},
+  {cat:"المحطة 2 • سمِّ الخاصية",e:"🧩",art:"(٢ + ٣)+٤ = ٢+(٣+٤)",q:"ما الخاصية المستخدمة في هذه العبارة؟",a:["خاصية العنصر المحايد","خاصية الإبدال","خاصية التجميع"],c:2,why:"تغيّر موضع الأقواس؛ إذن هي خاصية التجميع."},
+
+  {cat:"المحطة 3 • اختر المثال",e:"🔍",art:"أي مثال صحيح؟",q:"أي مما يلي مثال على خاصية الإبدال؟",a:["٥ + ٢ = ٢ + ٥","٥ + ٠ = ٥","(٥ + ٢) + ٣ = ٥ + (٢ + ٣)"],c:0,why:"تبدّل ترتيب ٥ و٢ فقط."},
+  {cat:"المحطة 3 • اختر المثال",e:"🎯",art:"الصفر صديقي",q:"أي مما يلي مثال على خاصية العنصر المحايد؟",a:["٣ + ٨ = ٨ + ٣","٦ + ٠ = ٦","(١ + ٢) + ٤ = ١ + (٢ + ٤)"],c:1,why:"الصفر لا يغيّر العدد عند الجمع."},
+  {cat:"المحطة 3 • اختر المثال",e:"🧩",art:"الأقواس تتغير",q:"أي مما يلي مثال على خاصية التجميع؟",a:["٨ + ٠ = ٨","٤ + ٦ = ٦ + ٤","(٢ + ٥) + ٣ = ٢ + (٥ + ٣)"],c:2,why:"تم تغيير طريقة التجميع بالأقواس."},
+  {cat:"المحطة 3 • أكمل",e:"✏️",art:"٣ + ٩ = ؟",q:"استخدم خاصية الإبدال: ٣ + ٩ = ؟",a:["٩ + ٣","٣ + ٠","٩ + ٠"],c:0,why:"نبدّل ترتيب العددين فقط."},
+
+  {cat:"المحطة 4 • أكمل التحدي",e:"0️⃣",art:"١٢ + □ = ١٢",q:"استخدم خاصية العنصر المحايد: ١٢ + ؟ = ١٢",a:["١٢","١","٠"],c:2,why:"جمع الصفر مع ١٢ يبقيها ١٢."},
+  {cat:"المحطة 4 • أكمل التحدي",e:"🧩",art:"(٣ + ٢) + ٥",q:"أكمل باستخدام خاصية التجميع: (٣ + ٢) + ٥ = ؟",a:["٣ + (٢ + ٥)","٥ + (٣ + ٢)","٣ + ٢ + ٠"],c:0,why:"نبقي ترتيب الأعداد ونغير التجميع بالأقواس."},
+  {cat:"المحطة 4 • صح أم خطأ",e:"⚡",art:"٧ + ٢ = ٢ + ٧",q:"٧ + ٢ = ٢ + ٧ مثال على خاصية الإبدال.",a:["صح ✅","خطأ ❌"],c:0,why:"صحيح، لأن العددين بدّلا مكانيهما."},
+  {cat:"المحطة 4 • صح أم خطأ",e:"⚡",art:"٥ + ٠ = ٥",q:"٥ + ٠ = ٥ مثال على خاصية التجميع.",a:["صح ✅","خطأ ❌"],c:1,why:"هذه خاصية العنصر المحايد وليست التجميع."},
+
+  {cat:"المحطة 5 • التحدي النهائي",e:"👑",art:"(٤ + ٣) + ٢ = ٤ + (٣ + ٢)",q:"قال خالد: (٤ + ٣) + ٢ = ٤ + (٣ + ٢). ما الخاصية التي استخدمها؟",a:["خاصية الإبدال","خاصية التجميع","خاصية العنصر المحايد"],c:1,why:"تغيّر موضع الأقواس مع بقاء ترتيب الأعداد، إذن هي خاصية التجميع."}
+];
+
+const rewardAt = {
+  4:{badge:"🌟",title:"نجمة الإبدال",text:"أكملت المحطة الأولى! حصلت على نجمة الإبدال و20 عملة إضافية."},
+  8:{badge:"🧠",title:"وسام خبير الخصائص",text:"رائع! أصبحت تميّز أسماء خصائص الجمع. حصلت على 25 عملة إضافية."},
+  12:{badge:"🔑",title:"المفتاح الذهبي",text:"فتحت الصندوق الثالث! هذا المفتاح يفتح لك محطة التحدي. +30 عملة."},
+  16:{badge:"👑",title:"تاج المثابرة",text:"وصلت إلى التحدي النهائي! تستحق تاج المثابرة و40 عملة إضافية."}
+};
+const rewardCoins={4:20,8:25,12:30,16:40};
+const stages=[
+  ["🌱","البداية",0,4],["🔄","الإبدال",4,8],["🧠","اعرف الخاصية",8,12],["⚡","التحدي",12,16],["🏆","الكأس",16,17]
+];
+
+let i=0, score=0, stars=0, coins=0, locked=false, student="بطل الرياضيات";
+
+const $=id=>document.getElementById(id);
+function show(id){
+  document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
+  $(id).classList.add("active");
+}
+function updateStats(){
+  $("stars").textContent=stars; $("coins").textContent=coins; $("score").textContent=score;
+}
+function renderPath(){
+  const p=$("path"); p.innerHTML="";
+  stages.forEach((s,idx)=>{
+    const el=document.createElement("div");
+    const done=i>=s[3], current=i>=s[2] && i<s[3];
+    el.className="node "+(done?"done":current?"current":"");
+    el.innerHTML=`<span class="dot">${done?"✓":s[0]}</span><span>${s[1]}</span>`;
+    p.appendChild(el);
+  });
+}
+function renderQuestion(){
+  locked=false;
+  const x=questions[i];
+  $("category").textContent=x.cat;
+  $("counter").textContent=`${i+1} / ${questions.length}`;
+  $("progressBar").style.width=`${((i+1)/questions.length)*100}%`;
+  $("qEmoji").textContent=x.e;
+  $("qArt").textContent=x.art;
+  $("question").textContent=x.q;
+  $("feedback").className="feedback";
+  $("feedback").textContent="";
+  $("nextBtn").style.display="none"; if($("autoNote")) $("autoNote").textContent="";
+  const box=$("answers"); box.innerHTML="";
+  x.a.forEach((txt,idx)=>{
+    const b=document.createElement("button");
+    b.className="answer"; b.textContent=txt;
+    b.addEventListener("click",()=>choose(idx,b));
+    box.appendChild(b);
+  });
+  renderPath();
+}
+function choose(idx,btn){
+  if(locked)return;
+  locked=true;
+  const x=questions[i], buttons=[...document.querySelectorAll(".answer")];
+  buttons.forEach((b,n)=>{b.disabled=true;if(n===x.c)b.classList.add("correct")});
+  if(idx===x.c){
+    score+=10; stars++; coins+=5; btn.classList.add("correct");
+    $("feedback").className="feedback show ok";
+    $("feedback").textContent="🌟 إجابة صحيحة! "+x.why;
+    burst(18);
+  }else{
+    btn.classList.add("wrong");
+    $("feedback").className="feedback show no";
+    $("feedback").textContent="💡 أحسنت المحاولة. الإجابة الصحيحة: "+x.a[x.c]+" — "+x.why;
+  }
+  updateStats();
+  $("nextBtn").style.display="inline-block";
+  if(idx===x.c){
+    if($("autoNote")) $("autoNote").textContent="🚀 رائع! الانتقال للمحطة التالية تلقائيًا...";
+    setTimeout(()=>{ if(locked) next(); }, 1100);
+  }
+}
+function next(){
+  const completed=i+1;
+  if(rewardAt[completed]){
+    const r=rewardAt[completed];
+    coins+=rewardCoins[completed]; updateStats();
+    $("rewardBadge").textContent=r.badge;
+    $("rewardTitle").textContent=r.title;
+    $("rewardText").textContent=r.text;
+    i++;
+    show("rewardScreen"); burst(45); return;
+  }
+  i++;
+  if(i>=questions.length){finish();return}
+  renderQuestion();
+}
+function finish(){
+  show("finishScreen");
+  $("certName").textContent=student;
+  $("finalScore").textContent=`${score} من ${questions.length*10} نقطة • ${stars} نجمة • ${coins} عملة`;
+  let msg= score>=150 ? "أداء مميز جدًا! أتقنت خصائص الجمع." : score>=110 ? "أداء جميل! أنهيت المغامرة بنجاح." : "أحسنت إكمال المغامرة! يمكنك اللعب مرة أخرى لجمع نجوم أكثر.";
+  $("finalMessage").textContent=msg;
+  burst(90);
+}
+function burst(n){
+  const c=$("confetti"), colors=["#6d4aff","#ffd65a","#34c98b","#56b6ff","#ff6b78"];
+  for(let k=0;k<n;k++){
+    const el=document.createElement("i");
+    el.style.left=Math.random()*100+"%";
+    el.style.background=colors[Math.floor(Math.random()*colors.length)];
+    el.style.animationDelay=(Math.random()*.45)+"s";
+    el.style.animationDuration=(1.5+Math.random()*1.2)+"s";
+    c.appendChild(el);
+    setTimeout(()=>el.remove(),3000);
+  }
+}
+$("startBtn").addEventListener("click",()=>{
+  student=$("studentName").value.trim()||"بطل الرياضيات";
+  i=0;score=0;stars=0;coins=0;updateStats();show("gameScreen");renderQuestion();burst(25);
+});
+$("nextBtn").addEventListener("click",next);
+$("continueBtn").addEventListener("click",()=>{
+  show("gameScreen");
+  if(i>=questions.length) finish(); else renderQuestion();
+});
+$("restartBtn").addEventListener("click",()=>{
+  i=0;score=0;stars=0;coins=0;updateStats();show("startScreen");
+});
+</script>
+</body>
+</html>
